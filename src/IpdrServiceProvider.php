@@ -2,7 +2,9 @@
 
 namespace Ispgrid\Ipdr;
 
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\ServiceProvider;
+use Ispgrid\Ipdr\Console\CopyCommand;
 
 /**
  * Session records (IPDR): every closed session copied to its own database (connection "ipdr") and kept for two
@@ -29,5 +31,13 @@ class IpdrServiceProvider extends ServiceProvider
     {
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
         $this->loadJsonTranslationsFrom(__DIR__.'/../lang');
+
+        if ($this->app->runningInConsole()) {
+            $this->commands([CopyCommand::class]);
+        }
+
+        $this->callAfterResolving(Schedule::class, function (Schedule $schedule): void {
+            $schedule->command('ipdr:copy')->everyFifteenMinutes()->withoutOverlapping();
+        });
     }
 }
