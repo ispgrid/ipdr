@@ -2,9 +2,12 @@
 
 namespace Ispgrid\Ipdr;
 
+use App\Support\SessionKeepers;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\ServiceProvider;
+use Ispgrid\Ipdr\Archive\ArchiveKeeper;
 use Ispgrid\Ipdr\Console\CopyCommand;
+use Ispgrid\Ipdr\Console\PurgeCommand;
 
 /**
  * Session records (IPDR): every closed session copied to its own database (connection "ipdr") and kept for two
@@ -31,13 +34,15 @@ class IpdrServiceProvider extends ServiceProvider
     {
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
         $this->loadJsonTranslationsFrom(__DIR__.'/../lang');
+        $this->app->make(SessionKeepers::class)->register(ArchiveKeeper::class);
 
         if ($this->app->runningInConsole()) {
-            $this->commands([CopyCommand::class]);
+            $this->commands([CopyCommand::class, PurgeCommand::class]);
         }
 
         $this->callAfterResolving(Schedule::class, function (Schedule $schedule): void {
             $schedule->command('ipdr:copy')->everyFifteenMinutes()->withoutOverlapping();
+            $schedule->command('ipdr:purge')->dailyAt('04:00')->withoutOverlapping();
         });
     }
 }
