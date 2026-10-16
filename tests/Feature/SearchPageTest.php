@@ -6,8 +6,8 @@ use App\Models\Radacct;
 use App\Models\Role;
 use App\Models\User;
 use Livewire\Livewire;
-use Spatie\Permission\PermissionRegistrar;
 use Spatie\Activitylog\Models\Activity;
+use Spatie\Permission\PermissionRegistrar;
 
 function closedSessionWithIp(string $username): void
 {
