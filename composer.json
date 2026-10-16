@@ -21,6 +21,7 @@
         "ispgrid": {
             "name": "Session records (IPDR)",
             "core": ["0.1"],
+            "databases": ["ispgrid_ipdr"],
             "providers": ["Ispgrid\\Ipdr\\IpdrServiceProvider"]
         }
     },
