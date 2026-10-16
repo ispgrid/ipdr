@@ -36,6 +36,7 @@
 /.factory
 /.gemini
 /.github/*
+!/.github/ISSUE_TEMPLATE/
 !/.github/workflows/
 /.grok
 /.junie
