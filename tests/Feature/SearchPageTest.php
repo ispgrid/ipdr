@@ -6,6 +6,7 @@ use App\Models\Radacct;
 use App\Models\Role;
 use App\Models\User;
 use Livewire\Livewire;
+use Spatie\Permission\PermissionRegistrar;
 use Spatie\Activitylog\Models\Activity;
 
 function closedSessionWithIp(string $username): void
@@ -24,6 +25,20 @@ it('is in the menu after Login log for Admin and closed to a Technician', functi
     $this->actingAs(User::factory()->role(Role::TECHNICIAN)->create())
         ->get(route('session-records.index'))
         ->assertForbidden();
+});
+
+it('stops an open page once its permission is taken away', function () {
+    $role = Role::create(['name' => 'Records desk', 'guard_name' => 'web']);
+    $role->givePermissionTo('search-session-records');
+    $staff = User::factory()->role('Records desk')->create();
+    $this->actingAs($staff);
+    $page = Livewire::test('ipdr::session-records')->assertOk();
+
+    $role->revokePermissionTo('search-session-records');
+    app(PermissionRegistrar::class)->forgetCachedPermissions();
+    $staff->unsetRelation('roles')->unsetRelation('permissions');
+
+    $page->set('value', '100.64.10.7')->assertForbidden();
 });
 
 it('needs a reference and a reason before it searches', function () {
