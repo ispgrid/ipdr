@@ -37,6 +37,8 @@
 /.gemini
 /.github/*
 !/.github/ISSUE_TEMPLATE/
+!/.github/dependabot.yml
+!/.github/pull_request_template.md
 !/.github/workflows/
 /.grok
 /.junie
