@@ -49,6 +49,14 @@ new #[Title('Session records')] class extends Component
     }
 
     /**
+     * mount() runs only when the page opens: every later request of the open page checks the permission again.
+     */
+    public function hydrate(): void
+    {
+        $this->authorize('search-session-records');
+    }
+
+    /**
      * Copies the newest closed sessions first, so a session that ended minutes ago is found too.
      */
     public function search(): void
