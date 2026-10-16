@@ -29,29 +29,30 @@ Not yet: NAT logs (customers behind CGNAT), a PDF export.
 
 ## Install
 
-It needs ISPGrid 0.1.x.
-
-**On a server set up with the ISPGrid installer:**
+It needs ISPGrid 0.1.x. On a server set up with the ISPGrid installer, as root:
 
 ```bash
 sudo /opt/ispgrid/deploy/install.sh --addon=ispgrid/ipdr
 ```
 
 The installer keeps the add-on on every upgrade and backs up the archive database with the nightly ISPGrid backup.
-Use this way on those servers: a package added there with Composer by hand is dropped at the next upgrade.
 
-**On an ISPGrid you deploy yourself**, from [Packagist](https://packagist.org/packages/ispgrid/ipdr):
+### Why the installer, and why root
 
-```bash
-composer require ispgrid/ipdr
-php artisan migrate
-```
+The panel runs as its own user, `ispgrid`, and that user cannot change the panel's code: `/opt/ispgrid` belongs to
+root, and `ispgrid` can write only `storage/` and `bootstrap/cache`. If someone ever broke into the panel, they could
+not rewrite its code or plant anything in `vendor/`. So adding a package needs root, and the installer does it
+safely:
 
-The migration creates the archive database `ispgrid_ipdr` on ISPGrid's database server, so ISPGrid's database user
-needs the right to create it (or create it first and grant that user access). `IPDR_DB_HOST`, `IPDR_DB_PORT`,
-`IPDR_DB_DATABASE`, `IPDR_DB_USERNAME` and `IPDR_DB_PASSWORD` in `.env` put it elsewhere. The copy (every 15 minutes)
-and the clean-up (daily at 04:00) run from Laravel's scheduler, which ISPGrid needs anyway
-(`php artisan schedule:run` every minute). Back up `ispgrid_ipdr` with the rest of your data.
+- Composer runs as root without its scripts, so root never runs the panel's code.
+- Package discovery and the database migration run as `ispgrid`; the migration creates the archive database
+  `ispgrid_ipdr`.
+- The add-on is recorded in `addons.json`, so every upgrade puts it back. A package added with Composer by hand is
+  removed at the next upgrade.
+- The caches are rebuilt, so the Session records page shows up at once.
+
+Running `composer require` as `ispgrid` fails because that user cannot write `composer.json` or `vendor/`. Don't
+give it ownership of `/opt/ispgrid` to get around that: it removes the protection.
 
 ## Development
 
