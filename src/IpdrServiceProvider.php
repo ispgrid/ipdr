@@ -52,16 +52,19 @@ class IpdrServiceProvider extends ServiceProvider
             fn (): string => __('Sessions'),
         );
 
+        // Registered on every core: the migration gives it to roles, and core 0.1.0's role form refuses to save a
+        // role holding a box it does not list.
+        $this->app->make(Permissions::class)->register(
+            'manage-session-records',
+            fn (): string => __('Session records settings'),
+            fn (): string => __('Sessions'),
+        );
+
         // Core 0.1.1 has the Add-ons menu group and settings page. On 0.1.0 the page stays in the main menu and
         // keep-days cannot be changed (the stored value still applies); copying and purging work the same.
         $addonsPage = class_exists(AddonSettings::class);
 
         if ($addonsPage) {
-            $this->app->make(Permissions::class)->register(
-                'manage-session-records',
-                fn (): string => __('Session records settings'),
-                fn (): string => __('Sessions'),
-            );
             $this->app->make(AddonSettings::class)->register('ispgrid/ipdr', 'ipdr::settings', 'manage-session-records');
         }
 
