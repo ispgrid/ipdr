@@ -54,6 +54,17 @@ safely:
 Running `composer require` as `ispgrid` fails because that user cannot write `composer.json` or `vendor/`. Don't
 give it ownership of `/opt/ispgrid` to get around that: it removes the protection.
 
+## Remove
+
+```bash
+sudo /opt/ispgrid/deploy/install.sh --remove-addon=ispgrid/ipdr
+```
+
+The page and the scheduled copy and purge go away, but the archive database `ispgrid_ipdr` is kept: the records may
+be ones you must still hand over, and installing the add-on again picks them up where they were. The nightly backup
+keeps dumping it. To delete the records too (they cannot be brought back, except from a backup):
+`sudo mysql -e 'DROP DATABASE ispgrid_ipdr'`.
+
 ## Development
 
 In an ISPGrid checkout:
