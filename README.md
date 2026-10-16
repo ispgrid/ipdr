@@ -62,8 +62,15 @@ sudo /opt/ispgrid/deploy/install.sh --remove-addon=ispgrid/ipdr
 
 The page and the scheduled copy and purge go away, but the archive database `ispgrid_ipdr` is kept: the records may
 be ones you must still hand over, and installing the add-on again picks them up where they were. The nightly backup
-keeps dumping it. To delete the records too (they cannot be brought back, except from a backup):
-`sudo mysql -e 'DROP DATABASE ispgrid_ipdr'`.
+keeps dumping it. To delete the records too, now or after an earlier removal:
+
+```bash
+sudo /opt/ispgrid/deploy/install.sh --remove-addon=ispgrid/ipdr --delete-data
+```
+
+The backup taken at the start of that run keeps a copy (`/var/backups/ispgrid/ispgrid_ipdr-*.sql.gz`, for 14 days);
+after that the records cannot be brought back. Don't drop the database by hand: the panel would still count the
+add-on's migration as done, and installing it again would not create the database.
 
 ## Development
 
