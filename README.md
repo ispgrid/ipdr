@@ -29,14 +29,29 @@ Not yet: NAT logs (customers behind CGNAT), a PDF export.
 
 ## Install
 
-On an ISPGrid server:
+It needs ISPGrid 0.1.x.
+
+**On a server set up with the ISPGrid installer:**
 
 ```bash
 sudo /opt/ispgrid/deploy/install.sh --addon=ispgrid/ipdr
 ```
 
-The installer keeps the add-on on every upgrade. It needs ISPGrid 0.1.x. The archive database is backed up with the
-nightly ISPGrid backup.
+The installer keeps the add-on on every upgrade and backs up the archive database with the nightly ISPGrid backup.
+Use this way on those servers: a package added there with Composer by hand is dropped at the next upgrade.
+
+**On an ISPGrid you deploy yourself**, from [Packagist](https://packagist.org/packages/ispgrid/ipdr):
+
+```bash
+composer require ispgrid/ipdr
+php artisan migrate
+```
+
+The migration creates the archive database `ispgrid_ipdr` on ISPGrid's database server, so ISPGrid's database user
+needs the right to create it (or create it first and grant that user access). `IPDR_DB_HOST`, `IPDR_DB_PORT`,
+`IPDR_DB_DATABASE`, `IPDR_DB_USERNAME` and `IPDR_DB_PASSWORD` in `.env` put it elsewhere. The copy (every 15 minutes)
+and the clean-up (daily at 04:00) run from Laravel's scheduler, which ISPGrid needs anyway
+(`php artisan schedule:run` every minute). Back up `ispgrid_ipdr` with the rest of your data.
 
 ## Development
 
