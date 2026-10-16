@@ -4,6 +4,10 @@ An add-on for [ISPGrid](https://github.com/ispgrid/ispgrid) that keeps every cus
 answers "who had this IP at this time". Indian ISPs must keep these records (IPDR) and hand them over on request;
 ISPs elsewhere can use it too.
 
+> [!WARNING]
+> **Preview: not ready for production yet.** Like ISPGrid itself, it can bring breaking changes until v1.0.0. Read the
+> release notes before you upgrade.
+
 ## What it does
 
 - **Archive:** every 15 minutes, each session that has ended is copied from FreeRADIUS's `radacct` into its own
