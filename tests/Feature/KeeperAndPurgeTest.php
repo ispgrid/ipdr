@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Ispgrid\Ipdr\Archive\ArchiveKeeper;
 use Ispgrid\Ipdr\Archive\CopySessions;
+use Ispgrid\Ipdr\Archive\KeepDays;
 
 function archiveRow(string $username, string $stoppedAgo): void
 {
@@ -52,7 +53,7 @@ it('removes archived sessions older than two years and keeps the rest', function
 });
 
 it('never keeps less than two years, whatever the setting says', function (string $value, int $days) {
-    AppSetting::put('ipdr_keep_days', $value);
+    AppSetting::put(KeepDays::KEY, $value);
 
     $this->artisan('ipdr:purge')->expectsOutput("Removed 0 sessions older than {$days} days.")->assertSuccessful();
 })->with([

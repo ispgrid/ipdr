@@ -1,7 +1,7 @@
 <section class="grid gap-6">
     <div>
         <x-ui.heading level="1" size="xl">{{ __('Session records') }}</x-ui.heading>
-        <x-ui.text muted class="mt-1">{{ __('Every session is kept for :days days. Each search is recorded in the Activity log with its reference and reason.', ['days' => $keepDays]) }}</x-ui.text>
+        <x-ui.text muted class="mt-1">{{ __('Every session is kept for :days days. Each search is recorded in the Activity log with its reference and reason.', ['days' => $this->keepDays]) }}</x-ui.text>
     </div>
 
     <form wire:submit="search" class="grid gap-4">
@@ -72,15 +72,5 @@
         </x-ui.table>
 
         {{ $this->results->links() }}
-    @endif
-
-    @if ($this->canManageKeepDays)
-        <x-ui.card class="grid content-start gap-4">
-            <x-ui.heading>{{ __('Keeping') }}</x-ui.heading>
-            <form wire:submit="saveKeepDays" class="grid gap-3 sm:grid-cols-[1fr_auto] sm:items-end">
-                <x-ui.input wire:model="keepDays" type="number" min="730" max="3650" :label="__('Keep session records (days)')" :description="__('Older records are removed every night. 730 to 3650 days.')" />
-                <x-ui.button type="submit">{{ __('Save') }}</x-ui.button>
-            </form>
-        </x-ui.card>
     @endif
 </section>

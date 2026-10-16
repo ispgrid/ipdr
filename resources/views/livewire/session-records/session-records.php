@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\AppSetting;
 use App\Models\Nas;
 use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Pagination\Paginator;
@@ -35,8 +34,6 @@ new #[Title('Session records')] class extends Component
 
     public string $reason = '';
 
-    public string $keepDays = '';
-
     /**
      * Set once a search passed validation; the table shows results only then.
      */
@@ -45,7 +42,6 @@ new #[Title('Session records')] class extends Component
     public function mount(): void
     {
         $this->authorize('search-session-records');
-        $this->keepDays = (string) KeepDays::get();
     }
 
     /**
@@ -93,13 +89,6 @@ new #[Title('Session records')] class extends Component
         }, 'session-records-'.now()->format('Ymd-Hi').'.csv', ['Content-Type' => 'text/csv']);
     }
 
-    public function saveKeepDays(): void
-    {
-        $this->authorize('manage-app-settings');
-        $this->validateOnly('keepDays', ['keepDays' => ['required', 'integer', 'between:'.KeepDays::MIN.','.KeepDays::MAX]]);
-        AppSetting::put('ipdr_keep_days', $this->keepDays);
-    }
-
     /**
      * @return array<string, array<int, mixed>>
      */
@@ -142,9 +131,9 @@ new #[Title('Session records')] class extends Component
     }
 
     #[Computed]
-    public function canManageKeepDays(): bool
+    public function keepDays(): int
     {
-        return auth()->user()->can('manage-app-settings');
+        return KeepDays::get();
     }
 
     /**

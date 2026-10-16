@@ -4,6 +4,7 @@ namespace Ispgrid\Ipdr;
 
 use App\Models\User;
 use App\Support\ActivityFormatter;
+use App\Support\Addons\AddonSettings;
 use App\Support\Navigation\Navigation;
 use App\Support\Navigation\NavItem;
 use App\Support\Permissions;
@@ -51,14 +52,27 @@ class IpdrServiceProvider extends ServiceProvider
             fn (): string => __('Sessions'),
         );
 
+        // Core 0.1.1 has the Add-ons menu group and settings page. On 0.1.0 the page stays in the main menu and
+        // keep-days cannot be changed (the stored value still applies); copying and purging work the same.
+        $addonsPage = class_exists(AddonSettings::class);
+
+        if ($addonsPage) {
+            $this->app->make(Permissions::class)->register(
+                'manage-session-records',
+                fn (): string => __('Session records settings'),
+                fn (): string => __('Sessions'),
+            );
+            $this->app->make(AddonSettings::class)->register('ispgrid/ipdr', 'ipdr::settings', 'manage-session-records');
+        }
+
         $this->app->make(Navigation::class)->add(new NavItem(
-            group: 'main',
+            group: $addonsPage ? 'addons' : 'main',
             label: fn (): string => __('Session records'),
             route: 'session-records.index',
             icon: 'document-magnifying-glass',
             active: ['session-records.*'],
             visible: fn (User $user): bool => $user->can('search-session-records'),
-            order: 45,
+            order: $addonsPage ? 10 : 45,
         ));
 
         ActivityFormatter::addEventLabel('session-records-searched', fn (): string => __('Session records searched'));

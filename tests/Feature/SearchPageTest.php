@@ -1,7 +1,6 @@
 <?php
 
 use App\Models\Account;
-use App\Models\AppSetting;
 use App\Models\Radacct;
 use App\Models\Role;
 use App\Models\User;
@@ -17,10 +16,11 @@ function closedSessionWithIp(string $username): void
     ]);
 }
 
-it('is in the menu after Login log for Admin and closed to a Technician', function () {
+it('is in the Add-ons menu for Admin and closed to a Technician', function () {
     $this->actingAs(User::factory()->create())
         ->get(route('dashboard'))
-        ->assertSeeInOrder([__('Login log'), __('Session records'), __('Plans')]);
+        ->assertSee("navGroup('addons', false)", false)
+        ->assertSeeInOrder([__('Providers'), __('Session records'), __('Staff')]);
 
     $this->actingAs(User::factory()->role(Role::TECHNICIAN)->create())
         ->get(route('session-records.index'))
@@ -90,15 +90,4 @@ it('exports the results as CSV and logs the export', function () {
         ->assertFileDownloaded();
 
     expect(Activity::query()->where('event', 'session-records-exported')->count())->toBe(1);
-});
-
-it('lets App settings staff set how long records are kept, never under two years', function () {
-    $this->actingAs(User::factory()->create());
-
-    Livewire::test('ipdr::session-records')
-        ->assertSet('keepDays', '730')
-        ->set('keepDays', '500')->call('saveKeepDays')->assertHasErrors(['keepDays'])
-        ->set('keepDays', '1095')->call('saveKeepDays')->assertHasNoErrors();
-
-    expect(AppSetting::valueOf('ipdr_keep_days'))->toBe('1095');
 });
