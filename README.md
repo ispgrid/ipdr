@@ -13,16 +13,17 @@ ISPs elsewhere can use it too.
 - **Archive:** every 15 minutes, each session that has ended is copied from FreeRADIUS's `radacct` into its own
   database, `ispgrid_ipdr`: username, device MAC, IP (IPv4 and IPv6), NAS, start, end, duration and data. A session
   that stays open is copied once it closes.
-- **Keeping:** 730 days (two years) by default, never less; set it on the Session records page (staff with the
-  "App settings" permission). Older records are removed every night.
+- **Keeping:** 730 days (two years) by default, never less; set it on System, then Add-ons (staff with the
+  "Session records settings" permission; ISPGrid 0.1.1 or newer). Older records are removed every night.
 - **Core's cleanup waits for it:** ISPGrid removes old sessions from `radacct` only after this add-on has archived
   them.
-- **Search:** menu "Session records". Search by an IP at a date and time (who had it then, sessions still online
+- **Search:** menu Add-ons, then "Session records" (on ISPGrid 0.1.0, in the main menu). Search by an IP at a date and time (who had it then, sessions still online
   included), or by username, device MAC or NAS over a date range. Results show the customer's current name, mobile
   and address, or "Deleted customer". Export the results as CSV.
 - **Accountability:** every search and export asks for a reference number and a reason, and is written to the
   Activity log.
-- **Permission:** "Search session records" on the Roles screen (Admin has it).
+- **Permissions:** "Search session records" and "Session records settings" on the Roles screen (Admin has both;
+  roles that had "App settings" get "Session records settings" when the add-on is updated).
 - English and Hindi.
 
 Not yet: NAT logs (customers behind CGNAT), a PDF export.
