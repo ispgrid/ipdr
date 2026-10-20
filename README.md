@@ -30,11 +30,14 @@ Not yet: NAT logs (customers behind CGNAT), a PDF export.
 
 ## Install
 
-It needs ISPGrid 0.1.x. On a server set up with the ISPGrid installer, as root:
+It needs ISPGrid 0.1.x. On a server set up with the ISPGrid installer:
 
 ```bash
-sudo /opt/ispgrid/deploy/install.sh --addon=ispgrid/ipdr
+sudo ispgrid addon add ispgrid/ipdr
 ```
+
+On ISPGrid older than 0.1.3, which has no `ispgrid` command, use
+`sudo /opt/ispgrid/deploy/install.sh --addon=ispgrid/ipdr`.
 
 The installer keeps the add-on on every upgrade and backs up the archive database with the nightly ISPGrid backup.
 
@@ -58,7 +61,7 @@ give it ownership of `/opt/ispgrid` to get around that: it removes the protectio
 ## Remove
 
 ```bash
-sudo /opt/ispgrid/deploy/install.sh --remove-addon=ispgrid/ipdr
+sudo ispgrid addon remove ispgrid/ipdr
 ```
 
 The page and the scheduled copy and purge go away, but the archive database `ispgrid_ipdr` is kept: the records may
@@ -66,7 +69,7 @@ be ones you must still hand over, and installing the add-on again picks them up 
 keeps dumping it. To delete the records too, now or after an earlier removal:
 
 ```bash
-sudo /opt/ispgrid/deploy/install.sh --remove-addon=ispgrid/ipdr --delete-data
+sudo ispgrid addon remove ispgrid/ipdr --delete-data
 ```
 
 The backup taken at the start of that run keeps a copy (`/var/backups/ispgrid/ispgrid_ipdr-*.sql.gz`, for 14 days);
