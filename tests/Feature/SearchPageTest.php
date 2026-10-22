@@ -91,3 +91,16 @@ it('exports the results as CSV and logs the export', function () {
 
     expect(Activity::query()->where('event', 'session-records-exported')->count())->toBe(1);
 });
+
+it('exports a name a spreadsheet would run as a formula as plain text', function () {
+    $this->actingAs(User::factory()->create());
+    Account::factory()->create(['username' => 'asha', 'fullname' => '=HYPERLINK("http://x.test")']);
+    closedSessionWithIp('asha');
+
+    $page = Livewire::test('ipdr::session-records')
+        ->set('by', 'ip')->set('value', '100.64.10.7')->set('at', '2026-10-15T10:00')
+        ->set('reference', 'R1')->set('reason', 'Test')
+        ->call('export');
+
+    expect(base64_decode((string) data_get($page->effects, 'download.content')))->toContain('"\'=HYPERLINK(""http://x.test"")"');
+});
