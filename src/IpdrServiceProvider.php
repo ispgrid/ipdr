@@ -24,17 +24,14 @@ class IpdrServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        $this->mergeConfigFrom(__DIR__.'/../config/ipdr.php', 'ipdr');
+
         /** @var array<string, mixed> $base */
         $base = config('database.connections.mysql');
+        $own = array_filter((array) config('ipdr.database', []), fn (mixed $value): bool => $value !== null && $value !== '');
         $default = $this->app->environment('testing') ? 'ispgrid_ipdr_test' : 'ispgrid_ipdr';
 
-        config(['database.connections.ipdr' => array_merge($base, [
-            'host' => env('IPDR_DB_HOST', $base['host']),
-            'port' => env('IPDR_DB_PORT', $base['port']),
-            'database' => env('IPDR_DB_DATABASE', $default),
-            'username' => env('IPDR_DB_USERNAME', $base['username']),
-            'password' => env('IPDR_DB_PASSWORD', $base['password']),
-        ])]);
+        config(['database.connections.ipdr' => array_merge($base, ['database' => $default], $own)]);
     }
 
     public function boot(): void

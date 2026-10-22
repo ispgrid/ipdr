@@ -6,6 +6,7 @@ use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Validation\Rule;
 use Ispgrid\Ipdr\Archive\CopySessions;
 use Ispgrid\Ipdr\Archive\KeepDays;
+use Ispgrid\Ipdr\Search\CsvCell;
 use Ispgrid\Ipdr\Search\SessionRows;
 use Ispgrid\Ipdr\Search\SessionSearch;
 use Livewire\Attributes\Computed;
@@ -82,7 +83,7 @@ new #[Title('Session records')] class extends Component
             fputcsv($output, $header, escape: '');
 
             foreach ($rows as $row) {
-                fputcsv($output, [$row['username'], $row['customer'], $row['mobile'], $row['address'], $row['mac'], $row['ip'], $row['nas'], $row['start'], $row['end'], $row['duration'], $row['down'], $row['up']], escape: '');
+                fputcsv($output, array_map(CsvCell::safe(...), [$row['username'], $row['customer'], $row['mobile'], $row['address'], $row['mac'], $row['ip'], $row['nas'], $row['start'], $row['end'], $row['duration'], $row['down'], $row['up']]), escape: '');
             }
 
             fclose($output);
