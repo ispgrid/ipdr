@@ -40,9 +40,14 @@ new #[Title('Session records')] class extends Component
      */
     public bool $searched = false;
 
+    /**
+     * Searches by username, MAC or NAS start on the last 7 days, still editable.
+     */
     public function mount(): void
     {
         $this->authorize('search-session-records');
+        $this->from = now()->subDays(7)->format('Y-m-d\TH:i');
+        $this->to = now()->format('Y-m-d\TH:i');
     }
 
     /**
@@ -103,8 +108,8 @@ new #[Title('Session records')] class extends Component
             'at' => [Rule::requiredIf(! $range), 'nullable', 'date'],
             'from' => [Rule::requiredIf($range), 'nullable', 'date'],
             'to' => [Rule::requiredIf($range), 'nullable', 'date', 'after_or_equal:from'],
-            'reference' => ['required', 'string', 'max:100'],
-            'reason' => ['required', 'string', 'max:255'],
+            'reference' => ['nullable', 'string', 'max:100'],
+            'reason' => ['nullable', 'string', 'max:255'],
         ];
     }
 
@@ -172,9 +177,10 @@ new #[Title('Session records')] class extends Component
     {
         activity()
             ->event($event)
-            ->withChanges(['attributes' => [
-                'reference' => $this->reference,
-                'reason' => $this->reason,
+            ->withChanges(['attributes' => array_filter([
+                'reference' => trim($this->reference),
+                'reason' => trim($this->reason),
+            ], fn (string $value): bool => $value !== '') + [
                 'search' => $this->query()->describe(),
                 'results' => $results,
             ]])

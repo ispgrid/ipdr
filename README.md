@@ -20,8 +20,8 @@ ISPs elsewhere can use it too.
 - **Search:** menu Add-ons, then "Session records" (on ISPGrid 0.1.0, in the main menu). Search by an IP at a date and time (who had it then, sessions still online
   included), or by username, device MAC or NAS over a date range. Results show the customer's current name, mobile
   and address, or "Deleted customer". Export the results as CSV.
-- **Accountability:** every search and export asks for a reference number and a reason, and is written to the
-  Activity log.
+- **Accountability:** every search and export is written to the Activity log, with the reference number and reason
+  when staff give them. Searches by username, MAC or NAS start on the last 7 days.
 - **Permissions:** "Search session records" and "Session records settings" on the Roles screen (Admin has both;
   roles that had "App settings" get "Session records settings" when the add-on is updated).
 - English and Hindi.

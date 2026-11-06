@@ -6,7 +6,6 @@
     "Device MAC": "डिवाइस MAC",
     "Download (bytes)": "डाउनलोड (बाइट)",
     "End": "समाप्त",
-    "Every session is kept for :days days. Each search is recorded in the Activity log with its reference and reason.": "हर सत्र :days दिन रखा जाता है। हर खोज संदर्भ और कारण के साथ गतिविधि लॉग में दर्ज होती है।",
     "Export CSV": "CSV निर्यात करें",
     "IP": "IP",
     "IP address at a time": "किसी समय पर IP पता",
@@ -23,5 +22,6 @@
     "Session records settings": "सत्र रिकॉर्ड की सेटिंग",
     "Start": "शुरू",
     "The number on the request you are answering.": "जिस अनुरोध का उत्तर दे रहे हैं उसकी संख्या।",
-    "Upload (bytes)": "अपलोड (बाइट)"
+    "Upload (bytes)": "अपलोड (बाइट)",
+    "Every session is kept for :days days. Each search is recorded in the Activity log, with the reference and reason when given.": "हर सेशन :days दिन तक रखा जाता है। हर खोज एक्टिविटी लॉग में दर्ज होती है, रेफ़रेंस और कारण दिए हों तो उनके साथ।"
 }
