@@ -41,13 +41,30 @@ it('stops an open page once its permission is taken away', function () {
     $page->set('value', '100.64.10.7')->assertForbidden();
 });
 
-it('needs a reference and a reason before it searches', function () {
+it('searches and logs without a reference or a reason', function () {
     $this->actingAs(User::factory()->create());
+    closedSessionWithIp('asha');
 
     Livewire::test('ipdr::session-records')
         ->set('by', 'ip')->set('value', '100.64.10.7')->set('at', '2026-10-15T10:00')
         ->call('search')
-        ->assertHasErrors(['reference' => 'required', 'reason' => 'required']);
+        ->assertHasNoErrors();
+
+    $log = Activity::query()->where('event', 'session-records-searched')->sole()->attribute_changes['attributes'];
+    expect($log)->not->toHaveKeys(['reference', 'reason'])
+        ->and($log['results'])->toBe(1);
+});
+
+it('starts a range search on the last 7 days', function () {
+    $this->travelTo('2026-10-24 13:45:00');
+    $this->actingAs(User::factory()->create());
+
+    Livewire::test('ipdr::session-records')
+        ->assertSet('from', '2026-10-17T13:45')
+        ->assertSet('to', '2026-10-24T13:45')
+        ->set('by', 'username')->set('value', 'asha')
+        ->call('search')
+        ->assertHasNoErrors();
 });
 
 it('shows who had the IP, with their details, and logs the search', function () {

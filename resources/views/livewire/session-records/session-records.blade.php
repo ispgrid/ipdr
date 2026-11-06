@@ -1,7 +1,7 @@
 <section class="grid gap-6">
     <div>
         <x-ui.heading level="1" size="xl">{{ __('Session records') }}</x-ui.heading>
-        <x-ui.text muted class="mt-1">{{ __('Every session is kept for :days days. Each search is recorded in the Activity log with its reference and reason.', ['days' => $this->keepDays]) }}</x-ui.text>
+        <x-ui.text muted class="mt-1">{{ __('Every session is kept for :days days. Each search is recorded in the Activity log, with the reference and reason when given.', ['days' => $this->keepDays]) }}</x-ui.text>
     </div>
 
     <form wire:submit="search" class="grid gap-4">
